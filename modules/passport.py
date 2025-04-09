@@ -21,10 +21,15 @@ def create_pdf_certificate(record, pdf_filename):
     c.setFont("Helvetica", 12)
     c.drawString(72, height - 100, f"Pack Serial: {record['PackSerial']}")
     c.drawString(72, height - 120, f"BMS Serial: {record['BMSSerial']}")
-    c.drawString(72, height - 140, f"Cell Serials: {record['CellSerials']}")
-    c.drawString(72, height - 160, f"Timestamp: {record['Timestamp']}")
-    c.drawImage(temp_qr_filename, 72, height - 300, width=100, height=100)
-    c.drawString(72, height - 320, "Scan for Pack Serial details.")
+    c.drawString(72, height - 140, "Cell Serials:")
+    y_position = height - 160
+    cell_serials = record["CellSerials"].split(',')
+    for serial in cell_serials:
+        c.drawString(92, y_position, serial)
+        y_position -= 15
+    c.drawString(72, y_position - 10, f"Timestamp: {record['Timestamp']}")
+    c.drawImage(temp_qr_filename, 72, y_position - 120, width=100, height=100)
+    c.drawString(72, y_position - 140, "Scan for Pack Serial details.")
     c.save()
 
     if os.path.exists(temp_qr_filename):
