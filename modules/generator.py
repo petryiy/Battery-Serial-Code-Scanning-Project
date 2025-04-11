@@ -9,7 +9,7 @@ MONTH_LETTER_MAP = {
 }
 
 
-def generate_pack_serial(csv_filename, capacity_code):
+def generate_pack_serial(csv_filename, capacity_code="14"):
     now = datetime.datetime.now()
     year = str(now.year)[-2:]
     month_letter = MONTH_LETTER_MAP.get(now.month, 'X')
