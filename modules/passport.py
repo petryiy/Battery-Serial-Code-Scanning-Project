@@ -3,9 +3,7 @@ import os
 import json
 import qrcode
 from reportlab.lib import colors
-from reportlab.lib.units import mm
 from reportlab.platypus import Table, TableStyle
-from PIL import Image
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
