@@ -15,13 +15,15 @@ def get_manual_input(prompt_message):
 def main():
     print("=== Battery Pack Project ===")
 
+    # read csv information from given path
     cell_csv_path = get_manual_input("Enter the path of the csv containing 16 cell serials: ")
     if not os.path.exists(cell_csv_path):
-        print("can't find the file")
+        print("Can't find the file")
         return
 
     cell_serials = []
 
+    # include the required information
     with open(cell_csv_path, mode='r', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
@@ -39,17 +41,21 @@ def main():
         print("Can't read any cell serial ")
         return
 
+    # assume capacity_code is 14 in this case
     capacity_code = "14"
     pack_serial = generate_pack_serial(CSV_FILENAME, capacity_code)
     print(f"The generated Pack Serial is: {pack_serial}")
 
+    # read the input BMS serial
     bms_serial = ''
     while not bms_serial:
         bms_serial = get_manual_input("Please enter the BMS Serial: ")
 
+    # create the record
     record = create_data_record(pack_serial, bms_serial, cell_serials)
     save_record_to_csv(record, CSV_FILENAME)
 
+    # generate the certificate
     certificate_identifier = create_digital_certificate(record)
     print(f"(simulation) sending '{certificate_identifier}' to IoT")
 
