@@ -80,8 +80,8 @@ def create_pdf_certificate(record, pdf_filename):
 # function to create both json and pdf file of the digital certificate
 def create_digital_certificate(record):
     cert_identifier = "CERT_" + record["PackSerial"]
-    json_filename = f"certificates/battery_passport_{record['PackSerial']}.json"
 
+    json_filename = f"certificates/battery_passport_{record['PackSerial']}.json"
     os.makedirs(os.path.dirname(json_filename), exist_ok=True)
 
     with open(json_filename, 'w') as json_file:
@@ -89,5 +89,7 @@ def create_digital_certificate(record):
     print(f"JSON certificate created: {json_filename}")
 
     pdf_filename = f"certificates/battery_passport_{record['PackSerial']}.pdf"
+    os.makedirs(os.path.dirname(pdf_filename), exist_ok=True)
+
     create_pdf_certificate(record, pdf_filename)
-    return cert_identifier
+    return cert_identifier, pdf_filename
