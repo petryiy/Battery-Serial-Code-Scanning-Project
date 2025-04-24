@@ -81,6 +81,9 @@ def create_pdf_certificate(record, pdf_filename):
 def create_digital_certificate(record):
     cert_identifier = "CERT_" + record["PackSerial"]
     json_filename = f"certificates/battery_passport_{record['PackSerial']}.json"
+
+    os.makedirs(os.path.dirname(json_filename), exist_ok=True)
+
     with open(json_filename, 'w') as json_file:
         json.dump(record, json_file, indent=4)
     print(f"JSON certificate created: {json_filename}")
