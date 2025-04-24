@@ -48,15 +48,6 @@ def main():
         record = create_data_record(pack_serial, bms_serial, cell_serials)
         save_record_to_csv(record, CSV_FILENAME)
 
-        # provide download for csv
-        with open(CSV_FILENAME, "rb") as f:
-            st.download_button(
-                label="Download history CSV",
-                data=f,
-                file_name="battery_pack_data.csv",
-                mime="text/csv"
-            )
-
         cert_identifier, pdf_path = create_digital_certificate(record)
 
         st.success("🎉 Battery passport generated successfully!")
