@@ -42,11 +42,20 @@ def main():
             st.error("❌ No valid cell serials found in the CSV file.")
             return
 
-        capacity_code = "14"  # now fixed as per CEO
+        capacity_code = "14"
         pack_serial = generate_pack_serial(CSV_FILENAME, capacity_code)
 
         record = create_data_record(pack_serial, bms_serial, cell_serials)
         save_record_to_csv(record, CSV_FILENAME)
+
+        # provide download for csv
+        with open(CSV_FILENAME, "rb") as f:
+            st.download_button(
+                label="Download history CSV",
+                data=f,
+                file_name="battery_pack_data.csv",
+                mime="text/csv"
+            )
 
         cert_identifier, pdf_path = create_digital_certificate(record)
 
