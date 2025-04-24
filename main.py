@@ -1,5 +1,6 @@
 import os
 import csv
+import streamlit as st
 
 from modules.generator import generate_pack_serial
 from modules.passport import create_digital_certificate, create_data_record
@@ -8,24 +9,20 @@ from modules.storage import save_record_to_csv
 CSV_FILENAME = "data/battery_pack_data.csv"
 
 
-def get_manual_input(prompt_message):
-    return input(prompt_message).strip()
+st.set_page_config(page_title="Battery Passport Generator", layout="centered")
 
 
 def main():
-    print("=== Battery Pack Project ===")
+    st.title("🔋 Battery Passport Generator")
+    st.write("Upload a CSV file containing **16 cell serials** to generate a battery passport.")
 
-    # read csv information from given path
-    cell_csv_path = get_manual_input("Enter the path of the csv containing 16 cell serials: ")
-    if not os.path.exists(cell_csv_path):
-        print("Can't find the file")
-        return
+    uploaded_file = st.file_uploader("Upload your CSV file here", type=["csv"])
 
-    cell_serials = []
+    bms_serial = st.text_input("Enter BMS Serial")
 
-    # include the required information
-    with open(cell_csv_path, mode='r', newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
+    if uploaded_file and bms_serial:
+        cell_serials = []
+        reader = csv.DictReader(uploaded_file.read().decode("utf-8").splitlines())
         for row in reader:
             serial = row.get("original_qr_content", "")
             date = row.get("production_date", "")
@@ -41,27 +38,26 @@ def main():
                     "model_codes": model_codes
                 })
 
-    if not cell_serials:
-        print("Can't read any cell serial ")
-        return
+        if not cell_serials:
+            st.error("❌ No valid cell serials found in the CSV file.")
+            return
 
-    # assume capacity_code is 14 in this case
-    capacity_code = "14"
-    pack_serial = generate_pack_serial(CSV_FILENAME, capacity_code)
-    print(f"The generated Pack Serial is: {pack_serial}")
+        capacity_code = "14"  # now fixed as per CEO
+        pack_serial = generate_pack_serial(CSV_FILENAME, capacity_code)
 
-    # read the input BMS serial
-    bms_serial = ''
-    while not bms_serial:
-        bms_serial = get_manual_input("Please enter the BMS Serial: ")
+        record = create_data_record(pack_serial, bms_serial, cell_serials)
+        save_record_to_csv(record, CSV_FILENAME)
 
-    # create the record
-    record = create_data_record(pack_serial, bms_serial, cell_serials)
-    save_record_to_csv(record, CSV_FILENAME)
+        cert_identifier, pdf_path = create_digital_certificate(record)
 
-    # generate the certificate
-    certificate_identifier = create_digital_certificate(record)
-    print(f"(simulation) sending '{certificate_identifier}' to IoT")
+        st.success("🎉 Battery passport generated successfully!")
+        with open(pdf_path, "rb") as f:
+            st.download_button("📄 Download Battery Passport (PDF)", f, file_name=os.path.basename(pdf_path))
+
+        st.caption(f"Simulated: Sent to IoT Device with ID `{cert_identifier}`")
+
+    elif uploaded_file and not bms_serial:
+        st.warning("⚠️ Please enter the BMS Serial to continue.")
 
 
 if __name__ == "__main__":
