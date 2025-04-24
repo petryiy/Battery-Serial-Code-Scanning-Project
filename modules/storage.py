@@ -15,4 +15,4 @@ def save_record_to_csv(record, filename):
             "BMSSerial": record["BMSSerial"],
             "Timestamp": record["Timestamp"]
         })
-    print(f"data saved to CSV: {filename}")
+    print(f"Data saved to CSV: {filename}")

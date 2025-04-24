@@ -30,11 +30,15 @@ def main():
             serial = row.get("original_qr_content", "")
             date = row.get("production_date", "")
             city = row.get("production_city", "")
+            manufacturers = row.get("manufacturers", "")
+            model_codes = row.get("model_codes", "")
             if serial:
                 cell_serials.append({
                     "serial": serial,
                     "production_date": date,
-                    "production_city": city
+                    "production_city": city,
+                    "manufacturers": manufacturers,
+                    "model_codes": model_codes
                 })
 
     if not cell_serials:

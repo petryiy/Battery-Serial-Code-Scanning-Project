@@ -44,11 +44,11 @@ def create_pdf_certificate(record, pdf_filename):
     c.setFont("Helvetica-Bold", 12)
     c.drawString(72, height - 200, "Cell Information:")
 
-    data = [["Serial", "Production Date", "Production City"]]
+    data = [["Serial", "Production Date", "Production City", "Manufacturers", "Model Codes"]]
     for cell in record["CellData"]:
-        data.append([cell['serial'], cell["production_date"], cell["production_city"]])
+        data.append([cell['serial'], cell["production_date"], cell["production_city"], cell["manufacturers"], cell["model_codes"]])
 
-    table = Table(data, colWidths=[200, 120, 120])
+    table = Table(data, colWidths=[160, 80, 80])
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
