@@ -78,6 +78,13 @@ def main():
                     mime="application/pdf"
                 )
 
+        if st.button("🔄 Start New Passport"):
+            st.session_state.submitted = False
+            st.session_state.pack_serial = None
+            st.session_state.record = None
+            st.session_state.pdf_path = None
+            st.experimental_rerun()
+
     elif uploaded_file and not bms_serial:
         st.warning("⚠️ Please enter the BMS Serial to continue.")
 
