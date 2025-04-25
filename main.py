@@ -81,6 +81,37 @@ def main():
     elif uploaded_file and not bms_serial:
         st.warning("⚠️ Please enter the BMS Serial to continue.")
 
+    st.markdown("---")
+    st.header("🔒 Admin Access")
+
+    if "admin_authenticated" not in st.session_state:
+        st.session_state.admin_authenticated = False
+
+    # enter password
+    admin_password = st.text_input("Enter admin password", type="password")
+
+    # password authorize
+    if st.button("Login as Admin"):
+        if admin_password == "vaulta_is_best":
+            st.session_state.admin_authenticated = True
+            st.success("Admin access granted.")
+        else:
+            st.error("Incorrect password.")
+
+    # download csv
+    if st.session_state.admin_authenticated:
+        st.subheader("📥 Download all battery passport records")
+        if os.path.exists(CSV_FILENAME):
+            with open(CSV_FILENAME, "rb") as f:
+                st.download_button(
+                    label="⬇️ Download CSV File",
+                    data=f,
+                    file_name=os.path.basename(CSV_FILENAME),
+                    mime="text/csv"
+                )
+        else:
+            st.warning("No CSV record file found.")
+
 
 if __name__ == "__main__":
     main()
