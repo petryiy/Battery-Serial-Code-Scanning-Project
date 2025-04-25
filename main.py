@@ -81,6 +81,7 @@ def main():
     elif uploaded_file and not bms_serial:
         st.warning("⚠️ Please enter the BMS Serial to continue.")
 
+    # admin window
     st.markdown("---")
     st.header("🔒 Admin Access")
 
