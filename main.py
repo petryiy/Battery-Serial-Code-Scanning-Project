@@ -93,7 +93,7 @@ def main():
 
     # password authorize
     if st.button("Login as Admin"):
-        if admin_password == "vaulta_is_best":
+        if admin_password == "michael_is_the_best":
             st.session_state.admin_authenticated = True
             st.success("Admin access granted.")
         else:
