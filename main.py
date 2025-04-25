@@ -13,6 +13,15 @@ st.set_page_config(page_title="Battery Passport Generator", layout="centered")
 
 
 def main():
+    if "submitted" not in st.session_state:
+        st.session_state.submitted = False
+    if "pack_serial" not in st.session_state:
+        st.session_state.pack_serial = None
+    if "record" not in st.session_state:
+        st.session_state.record = None
+    if "pdf_path" not in st.session_state:
+        st.session_state.pdf_path = None
+
     st.title("🔋 Battery Passport Generator")
     st.write("Upload a CSV file containing **16 cell serials** to generate a battery passport.")
 
@@ -42,19 +51,32 @@ def main():
             st.error("❌ No valid cell serials found in the CSV file.")
             return
 
-        capacity_code = "14"
-        pack_serial = generate_pack_serial(CSV_FILENAME, capacity_code)
+        if st.button("Generate Battery Passport") and not st.session_state.submitted:
+            # generate pack serial
+            capacity_code = "14"
+            pack_serial = generate_pack_serial(CSV_FILENAME, capacity_code)
+            st.session_state.pack_serial = pack_serial
+            # save record
+            record = create_data_record(pack_serial, bms_serial, cell_serials)
+            save_record_to_csv(record, CSV_FILENAME)
+            # generate certificate
+            cert_identifier, pdf_path = create_digital_certificate(record)
 
-        record = create_data_record(pack_serial, bms_serial, cell_serials)
-        save_record_to_csv(record, CSV_FILENAME)
+            # save state
+            st.session_state.record = record
+            st.session_state.pdf_path = pdf_path
+            st.session_state.submitted = True
 
-        cert_identifier, pdf_path = create_digital_certificate(record)
+            st.success(f"🎉 Battery passport for pack {pack_serial} generated successfully!")
 
-        st.success("🎉 Battery passport generated successfully!")
-        with open(pdf_path, "rb") as f:
-            st.download_button("📄 Download Battery Passport (PDF)", f, file_name=os.path.basename(pdf_path))
-
-        st.caption(f"Simulated: Sent to IoT Device with ID `{cert_identifier}`")
+        if st.session_state.submitted and st.session_state.pdf_path:
+            with open(st.session_state.pdf_path, "rb") as f:
+                st.download_button(
+                    label="📄 Download PDF Passport",
+                    data=f.read(),
+                    file_name=os.path.basename(st.session_state.pdf_path),
+                    mime="application/pdf"
+                )
 
     elif uploaded_file and not bms_serial:
         st.warning("⚠️ Please enter the BMS Serial to continue.")
