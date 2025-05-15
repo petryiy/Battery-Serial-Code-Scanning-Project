@@ -3,5 +3,4 @@ reportlab
 pandas
 gunicorn
 datetime
-json
 csv
