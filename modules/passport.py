@@ -11,10 +11,10 @@ from reportlab.lib.pagesizes import letter
 # helper function to create data record including pack_serial, bms_serial, and cell_data
 def create_data_record(pack_serial, bms_serial, cell_data):
     return {
-        "PackSerial": pack_serial,
-        "BMSSerial": bms_serial,
-        "CellData": cell_data,
-        "Timestamp": str(datetime.datetime.now())
+        "pack_serial": pack_serial,
+        "bms_serial": bms_serial,
+        "cells": cell_data,
+        "timestamp": str(datetime.datetime.now())
     }
 
 
@@ -36,17 +36,23 @@ def create_pdf_certificate(record, pdf_filename):
 
     # required data information
     c.setFont("Helvetica", 12)
-    c.drawString(72, height - 130, f"Pack Serial: {record['PackSerial']}")
-    c.drawString(72, height - 150, f"BMS Serial: {record['BMSSerial']}")
-    c.drawString(72, height - 170, f"Timestamp: {record['Timestamp']}")
+    c.drawString(72, height - 130, f"Pack Serial: {record['pack_serial']}")
+    c.drawString(72, height - 150, f"BMS Serial: {record['bms_serial']}")
+    c.drawString(72, height - 170, f"Timestamp: {record['timestamp']}")
 
     # the cell serial table
     c.setFont("Helvetica-Bold", 12)
     c.drawString(72, height - 200, "Cell Information:")
 
     data = [["Serial", "Production Date", "Production City", "Manufacturers", "Model Codes"]]
-    for cell in record["CellData"]:
-        data.append([cell['serial'], cell["production_date"], cell["production_city"], cell["manufacturers"], cell["model_codes"]])
+    for cell in record["cells"]:
+        data.append([
+            cell['serial'],
+            cell["production_date"],
+            cell["production_city"],
+            cell["manufacturers"],
+            cell["model_codes"]
+        ])
 
     table = Table(data, colWidths=[160, 80, 80])
     table.setStyle(TableStyle([
@@ -63,7 +69,7 @@ def create_pdf_certificate(record, pdf_filename):
     table.drawOn(c, 72, height - 250 - (len(data) * 15))
 
     # the qr code, but only include the pack serial
-    qr = qrcode.make(record["PackSerial"])
+    qr = qrcode.make(record["pack_serial"])
     qr_path = "temp_qr.png"
     qr.save(qr_path)
     c.drawImage(qr_path, width - 150, 72, width=100, height=100)
@@ -79,12 +85,12 @@ def create_pdf_certificate(record, pdf_filename):
 
 # function to create both json and pdf file of the digital certificate
 def create_digital_certificate(record):
-    cert_identifier = "CERT_" + record["PackSerial"]
-    json_filename = f"certificates/battery_passport_{record['PackSerial']}.json"
+    cert_identifier = "CERT_" + record["pack_serial"]
+    json_filename = f"certificates/battery_passport_{record['pack_serial']}.json"
     with open(json_filename, 'w') as json_file:
         json.dump(record, json_file, indent=4)
     print(f"JSON certificate created: {json_filename}")
 
-    pdf_filename = f"certificates/battery_passport_{record['PackSerial']}.pdf"
+    pdf_filename = f"certificates/battery_passport_{record['pack_serial']}.pdf"
     create_pdf_certificate(record, pdf_filename)
-    return cert_identifier
+    return cert_identifier, pdf_filename

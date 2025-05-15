@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: battery-passport
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+    plan: free

@@ -6,13 +6,13 @@ import csv
 def save_record_to_csv(record, filename):
     file_exists = os.path.exists(filename)
     with open(filename, mode='a', newline='') as csvfile:
-        fieldnames = ["PackSerial", "BMSSerial", "Timestamp"]
+        fieldnames = ["pack_serial", "bms_serial", "timestamp"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         if not file_exists:
             writer.writeheader()
         writer.writerow({
-            "PackSerial": record["PackSerial"],
-            "BMSSerial": record["BMSSerial"],
-            "Timestamp": record["Timestamp"]
+            "pack_serial": record["pack_serial"],
+            "bms_serial": record["bms_serial"],
+            "timestamp": record["timestamp"]
         })
     print(f"Data saved to CSV: {filename}")

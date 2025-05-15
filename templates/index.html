@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Battery Passport Generator</title>
+</head>
+<body>
+    <h2>Upload Cell CSV and Enter BMS Serial</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <label>CSV File:</label>
+        <input type="file" name="file" required><br><br>
+        <label>BMS Serial:</label>
+        <input type="text" name="bms_serial" required><br><br>
+        <input type="submit" value="Generate Battery Passport">
+    </form>
+
+    {% if download_link %}
+        <p><strong>Success!</strong> <a href="{{ url_for('download_file', filename=download_link) }}">Download PDF Passport</a></p>
+    {% endif %}
+</body>
+</html>
