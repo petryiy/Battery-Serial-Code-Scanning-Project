@@ -2,9 +2,10 @@ import os
 import csv
 import streamlit as st
 
-from modules.generator import generate_pack_serial
+# from modules.generator import generate_pack_serial
 from modules.passport import create_digital_certificate, create_data_record
-from modules.storage import save_record_to_csv
+# from modules.storage import save_record_to_csv
+from modules.sheet import get_latest_pack_serial, save_record_to_sheet
 
 CSV_FILENAME = "data/battery_pack_data.csv"
 
@@ -54,11 +55,11 @@ def main():
         if st.button("Generate Battery Passport") and not st.session_state.submitted:
             # generate pack serial
             capacity_code = "14"
-            pack_serial = generate_pack_serial(CSV_FILENAME, capacity_code)
+            pack_serial = get_latest_pack_serial(capacity_code)
             st.session_state.pack_serial = pack_serial
             # save record
             record = create_data_record(pack_serial, bms_serial, cell_serials)
-            save_record_to_csv(record, CSV_FILENAME)
+            save_record_to_sheet(record)
             # generate certificate
             cert_identifier, pdf_path = create_digital_certificate(record)
 

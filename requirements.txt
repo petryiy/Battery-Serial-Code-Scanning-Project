@@ -1,3 +1,5 @@
 qrcode
 reportlab
 streamlit
+gspread
+oauth2client
