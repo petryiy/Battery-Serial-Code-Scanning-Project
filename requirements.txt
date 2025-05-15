@@ -4,3 +4,4 @@ pandas
 gunicorn
 datetime
 qrcode
+sqlite3

@@ -1,10 +1,9 @@
 import csv
-
 from flask import Flask, request, render_template, send_file
 import os
 from modules.generator import generate_pack_serial
 from modules.passport import create_digital_certificate, create_data_record
-from modules.storage import save_record_to_csv
+from modules.storage import save_record_to_csv, init_db
 
 app = Flask(__name__)
 
@@ -47,7 +46,8 @@ def index():
                 return render_template("index.html", download_link=None, error="Invalid CSV content")
 
             capacity_code = "14"
-            pack_serial = generate_pack_serial(CSV_FILENAME, capacity_code)
+            pack_serial = generate_pack_serial(bms_serial, capacity_code)
+
             record = create_data_record(pack_serial, bms_serial, cell_serials)
 
             save_record_to_csv(record, CSV_FILENAME)

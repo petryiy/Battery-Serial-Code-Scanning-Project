@@ -1,6 +1,5 @@
-import os
-import csv
 import datetime
+from .storage import get_latest_serial_with_prefix, save_record_to_db, init_db
 
 MONTH_LETTER_MAP = {
     1: 'A', 2: 'B', 3: 'C', 4: 'D',
@@ -8,21 +7,24 @@ MONTH_LETTER_MAP = {
     9: 'I', 10: 'J', 11: 'K', 12: 'L'
 }
 
+init_db()
 
-# function to generate the pack serial given csv_filename and assume capacity code of 14
-def generate_pack_serial(csv_filename, capacity_code="14"):
+
+def generate_pack_serial(bms_serial, capacity_code="14"):
     now = datetime.datetime.now()
     year = str(now.year)[-2:]
     month_letter = MONTH_LETTER_MAP.get(now.month, 'X')
     prefix = f"{year}{month_letter}{capacity_code}"
 
-    sequence = 1
+    latest_serial = get_latest_serial_with_prefix(prefix)
 
-    if os.path.exists(csv_filename):
-        with open(csv_filename, mode='r', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                if row.get("PackSerial", "").startswith(prefix):
-                    sequence += 1
+    if latest_serial:
+        seq_num = int(latest_serial[-3:]) + 1
+    else:
+        seq_num = 1
 
-    return f"{prefix}{sequence:03d}"
+    new_serial = f"{prefix}{seq_num:03d}"
+
+    save_record_to_db(new_serial, bms_serial)
+
+    return new_serial
