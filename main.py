@@ -1,6 +1,7 @@
 import csv
 from flask import Flask, request, render_template, send_file
 import os
+import sqlite3
 from modules.generator import generate_pack_serial
 from modules.passport import create_digital_certificate, create_data_record
 from modules.storage import save_record_to_csv, init_db
@@ -61,6 +62,17 @@ def index():
 @app.route("/download/<path:filename>")
 def download_file(filename):
     return send_file(filename, as_attachment=True)
+
+
+@app.route("/records")
+def view_records():
+    db_path = "data/battery_pack.db"
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT pack_serial, bms_serial, timestamp FROM battery_pack ORDER BY id DESC")
+    records = cursor.fetchall()
+    conn.close()
+    return render_template("records.html", records=records)
 
 
 if __name__ == "__main__":

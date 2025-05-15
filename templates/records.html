@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Battery Pack Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #eee;
+        }
+        a.button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        a.button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Battery Pack Records</h1>
+
+    <a href="/download/data/battery_pack_data.csv" class="button">⬇️ Download CSV</a>
+
+    <table>
+        <tr>
+            <th>Pack Serial</th>
+            <th>BMS Serial</th>
+            <th>Timestamp</th>
+        </tr>
+        {% for r in records %}
+        <tr>
+            <td>{{ r[0] }}</td>
+            <td>{{ r[1] }}</td>
+            <td>{{ r[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br><br>
+    <a href="/" class="button">🔙 Back to Home</a>
+</body>
+</html>
