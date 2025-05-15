@@ -5,7 +5,6 @@ import json
 import streamlit as st
 
 
-
 SHEET_ID = "1_QKBHGAeazIOg1oXDl05NQCJM-W0JJ_n4k7jHtvRg04"
 SHEET_NAME = "Battery Serial Code Scanning Record"
 
@@ -16,7 +15,7 @@ def connect_to_sheet():
         "https://www.googleapis.com/auth/drive"
     ]
     service_account_info = json.loads(st.secrets["gcp_service_account"])
-    creds = ServiceAccountCredentials.from_json_keyfile_name(service_account_info, scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
     client = gspread.authorize(creds)
     sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
     return sheet
