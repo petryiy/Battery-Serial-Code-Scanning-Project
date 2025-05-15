@@ -23,13 +23,17 @@ def connect_to_sheet():
 
 def get_latest_pack_serial(capacity_code="14"):
     sheet = connect_to_sheet()
-    records = sheet.get_all_records()
+    rows = sheet.get_all_values()
     now = datetime.datetime.now()
     year = str(now.year)[-2:]
     month_letter = "ABCDEFGHIJKL"[now.month - 1]
     prefix = f"{year}{month_letter}{capacity_code}"
-    sequence = sum(1 for r in records if str(r.get("PackSerial", "")).startswith(prefix)) + 1
-    return f"{prefix}{sequence:03d}"
+
+    sequence = 0
+    for row in rows[1:]:
+        if len(row) >= 1 and str(row[0]).startswith(prefix):
+            sequence += 1
+    return f"{prefix}{sequence + 1:03d}"
 
 
 def save_record_to_sheet(record):
