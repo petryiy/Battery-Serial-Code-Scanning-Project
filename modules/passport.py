@@ -1,7 +1,7 @@
 import datetime
 import os
 import json
-import qrcode
+# import qrcode
 from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
 from reportlab.pdfgen import canvas

@@ -1,6 +1,6 @@
 import csv
 
-from flask import Flask, request, render_template, send_file, redirect, url_for
+from flask import Flask, request, render_template, send_file
 import os
 from modules.generator import generate_pack_serial
 from modules.passport import create_digital_certificate, create_data_record
