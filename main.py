@@ -84,7 +84,7 @@ def main():
                 for key in ["submitted", "pack_serial", "record", "pdf_path"]:
                     if key in st.session_state:
                         del st.session_state[key]
-                st.experimental_rerun()
+                st.rerun()
 
     elif uploaded_file and not bms_serial:
         st.warning("⚠️ Please enter the BMS Serial to continue.")
