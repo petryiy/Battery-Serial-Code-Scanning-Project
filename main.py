@@ -69,6 +69,8 @@ def main():
             st.session_state.submitted = True
 
             st.success(f"🎉 Battery passport for pack {pack_serial} generated successfully!")
+            st.markdown(
+                "✅ You can view all records at the Google Sheet (https://docs.google.com/spreadsheets/d/1_QKBHGAeazIOg1oXDl05NQCJM-W0JJ_n4k7jHtvRg04/edit?usp=sharing")
 
         if st.session_state.submitted and st.session_state.pdf_path:
             with open(st.session_state.pdf_path, "rb") as f:
@@ -78,41 +80,14 @@ def main():
                     file_name=os.path.basename(st.session_state.pdf_path),
                     mime="application/pdf"
                 )
+            if st.button("Upload another battery pack"):
+                for key in ["submitted", "pack_serial", "record", "pdf_path"]:
+                    if key in st.session_state:
+                        del st.session_state[key]
+                st.experimental_rerun()
 
     elif uploaded_file and not bms_serial:
         st.warning("⚠️ Please enter the BMS Serial to continue.")
-
-    # admin window
-    st.markdown("---")
-    st.header("🔒 Admin Access")
-
-    if "admin_authenticated" not in st.session_state:
-        st.session_state.admin_authenticated = False
-
-    # enter password
-    admin_password = st.text_input("Enter admin password", type="password")
-
-    # password authorize
-    if st.button("Login as Admin"):
-        if admin_password == "vaulta":
-            st.session_state.admin_authenticated = True
-            st.success("Admin access granted.")
-        else:
-            st.error("Incorrect password.")
-
-    # download csv
-    if st.session_state.admin_authenticated:
-        st.subheader("📥 Download all battery passport records")
-        if os.path.exists(CSV_FILENAME):
-            with open(CSV_FILENAME, "rb") as f:
-                st.download_button(
-                    label="⬇️ Download CSV File",
-                    data=f,
-                    file_name=os.path.basename(CSV_FILENAME),
-                    mime="text/csv"
-                )
-        else:
-            st.warning("No CSV record file found.")
 
 
 if __name__ == "__main__":
