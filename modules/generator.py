@@ -9,8 +9,8 @@ MONTH_LETTER_MAP = {
 }
 
 
-# function to generate the pack serial given csv_filename and assume capacity code of 14
-def generate_pack_serial(csv_filename, capacity_code="14"):
+# function to generate the pack serial given csv_filename and assume capacity code of 05
+def generate_pack_serial(csv_filename, capacity_code="05"):
     now = datetime.datetime.now()
     year = str(now.year)[-2:]
     month_letter = MONTH_LETTER_MAP.get(now.month, 'X')

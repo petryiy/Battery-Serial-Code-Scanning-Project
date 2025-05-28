@@ -54,7 +54,7 @@ def main():
 
         if st.button("Generate Battery Passport") and not st.session_state.submitted:
             # generate pack serial
-            capacity_code = "14"
+            capacity_code = "05"
             pack_serial = get_latest_pack_serial(capacity_code)
             st.session_state.pack_serial = pack_serial
             # save record

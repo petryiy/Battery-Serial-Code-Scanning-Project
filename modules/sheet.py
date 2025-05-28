@@ -21,7 +21,7 @@ def connect_to_sheet():
     return sheet
 
 
-def get_latest_pack_serial(capacity_code="14"):
+def get_latest_pack_serial(capacity_code="05"):
     sheet = connect_to_sheet()
     rows = sheet.get_all_values()
     now = datetime.datetime.now()
